@@ -7,20 +7,26 @@ def run(input_folder):
 
     name = os.path.basename(input_folder)
     outer_folder = os.path.dirname(input_folder)
-    video_name = f"{name}.avi"
+    video_name = f"{name}.mp4"
     video_path = os.path.join(outer_folder, video_name)
 
     images = [img for img in os.listdir(input_folder) if img.endswith(".png")]
     frame = cv2.imread(os.path.join(input_folder, images[0]))
     height, width, layers = frame.shape
 
-    video = cv2.VideoWriter(video_path, 0, 15, (width,height))
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # You can also try 'avc1'
+    fps = 2  # Adjust frame rate as needed
+    video = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
 
+    # Write images to video
     for image in images:
-        video.write(cv2.imread(os.path.join(input_folder, image)))
+        img_path = os.path.join(input_folder, image)
+        frame = cv2.imread(img_path)
+        video.write(frame)
 
-    cv2.destroyAllWindows()
+    # Release resources
     video.release()
+    cv2.destroyAllWindows()
 
 def main():
     """
